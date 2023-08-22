@@ -15,7 +15,7 @@ jobs:
 
       - name: Install New Relic Agent
         env:
-          NR_LICENSE_KEY: ${{ secrets.NR_LICENSE_KEY }} # Use your GitHub secret name here
+          NR_LICENSE_KEY: ${{ secrets.NR_LICENSE_KEY }} 
         run: |
           echo "license_key: $NR_LICENSE_KEY" > newrelic.js
           curl -L https://download.newrelic.com/install/newrelic.js > /tmp/install_newrelic.js
@@ -28,5 +28,4 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Restart your application here
             sudo service your-app restart
