@@ -1,0 +1,32 @@
+name: Install New Relic Agent
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  install-newrelic:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install New Relic Agent
+        env:
+          NR_LICENSE_KEY: ${{ secrets.NR_LICENSE_KEY }} # Use your GitHub secret name here
+        run: |
+          echo "license_key: $NR_LICENSE_KEY" > newrelic.js
+          curl -L https://download.newrelic.com/install/newrelic.js > /tmp/install_newrelic.js
+          NR_INSTALL_USE_CP_NOT_LN=1 NR_INSTALL_SILENT=1 NR_INSTALL_KEY=$NR_LICENSE_KEY bash /tmp/install_newrelic.js
+
+      - name: SSH into EC2 Instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Restart your application here
+            sudo service your-app restart
